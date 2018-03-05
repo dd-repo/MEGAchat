@@ -75,8 +75,18 @@ int64_t Recorder::getLongValue(webrtc::StatsReport::StatsValueName name, const w
         }
         else
         {
-            KR_LOG_DEBUG("Incorrect type: Value with id %s is not an int, but has type %d", value->ToString().c_str(), value->type());
-            assert(false);
+            try
+            {
+                numericalValue = stoll(value->ToString());
+            }
+            catch(const std::exception& ex)
+            {
+                numericalValue = 0;
+                KR_LOG_DEBUG("Invalid value and type for %s", value->display_name());
+            }
+
+            KR_LOG_DEBUG("Incorrect type: Value with id %s (value: %s) is not an int, but has type %d",
+                         value->display_name(), value->ToString().c_str(), value->type());
         }
     }
 
